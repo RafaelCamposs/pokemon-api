@@ -13,7 +13,20 @@ const UserSchema = new Schema({
     password:{
         type: String,
         required:true
+    },
+    name:{
+        type:String,
+        required: true
+    },
+    age:{
+        type:Number,
+        required:true
+    },
+    gender:{
+        type:String,
+        required:true
     }
+
 });
 
 UserSchema.pre(

@@ -4,7 +4,7 @@ const passport = require('passport');
 
 const UserModel = require('./model/model');
 
-mongoose.connect( {
+mongoose.connect(),{
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -27,7 +27,7 @@ app.use('/', routes);
 app.use('/user', passport.authenticate('jwt', {session:false}),secureRoute);
 
 app.use(function(err,req,res,next){
-    req.status(err.status || 500 );
+    res.status(err.status || 500 );
     res.json({error:err});
 });
 
