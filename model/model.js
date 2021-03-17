@@ -25,7 +25,8 @@ const UserSchema = new Schema({
     gender:{
         type:String,
         required:true
-    }
+    },
+    pokemonList:[String]
 
 });
 
