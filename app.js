@@ -4,7 +4,7 @@ const passport = require('passport');
 
 const UserModel = require('./model/model');
 
-mongoose.connect(){
+mongoose.connect(),{
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

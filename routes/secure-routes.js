@@ -19,23 +19,29 @@ router.get(
 
 router.put(
     '/create',
-    (req,res)=>{
+    (req, res) => {
         const id = req.body._id;
         const pokemons = req.body.pokemon
+        P.getPokemonByName(pokemons) // with Promise
+            .then(function (response) {
+                UserModel.findByIdAndUpdate(
+                    id,
+                    { $push: { pokemonList: pokemons } },
+                    async (error, result) => {
+                        try {
+                            res.json({
+                                message: "The pokemon was added to you pokemon list",
+                            })
+                        } catch (error) {
+                            res.send(error);
+                        }
+                    }
+                )
+            })
+            .catch(function (error) {
+                res.status(404).json("Pokemon not found");
+            });
 
-        UserModel.findByIdAndUpdate(
-            id, 
-            {$push: { pokemonList: pokemons } },
-            async (error, result) => {
-                try {
-                    res.json({
-                        message: "The pokemon was added to you pokemon list",
-                    })
-                } catch (error) {
-                    res.send(error);
-                }
-            }
-        )
     }
 )
 
