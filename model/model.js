@@ -26,7 +26,10 @@ const UserSchema = new Schema({
         type:String,
         required:true
     },
-    pokemonList:[String]
+    pokemonList:[{
+        pokemon :String,
+        pokemonName: String
+    }]
 
 });
 

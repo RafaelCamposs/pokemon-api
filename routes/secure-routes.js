@@ -4,8 +4,10 @@ const UserModel = require('../model/model');
 const bcrypt = require('bcrypt');
 const Pokedex = require('pokedex-promise-v2');
 const { response } = require('express');
+const { findByIdAndUpdate, findById } = require('../model/model');
 const P = new Pokedex();
 
+//User Secure routes//
 router.get(
     '/profile',
     (req, res, next) => {
@@ -16,36 +18,6 @@ router.get(
         })
     }
 );
-
-router.put(
-    '/create',
-    (req, res) => {
-        const id = req.body._id;
-        const pokemons = req.body.pokemon
-        P.getPokemonByName(pokemons) // with Promise
-            .then(function (response) {
-                UserModel.findByIdAndUpdate(
-                    id,
-                    { $push: { pokemonList: pokemons } },
-                    async (error, result) => {
-                        try {
-                            res.json({
-                                message: "The pokemon was added to you pokemon list",
-                            })
-                        } catch (error) {
-                            res.send(error);
-                        }
-                    }
-                )
-            })
-            .catch(function (error) {
-                res.status(404).json("Pokemon not found");
-            });
-
-    }
-)
-
-
 
 router.put(
     '/edit',
@@ -79,5 +51,102 @@ router.put(
         )
     }
 )
+
+
+//Pokemons secure routes
+
+router.put(
+    '/create',
+    (req, res) => {
+        const id = req.body._id;
+        const pname = req.body.pname;
+        const pokemons = {
+            pokemon: req.body.pokemon,
+            pokemonName: req.body.pname
+        }
+        P.getPokemonByName(pokemons.pokemon)
+            .then(function (response) {
+                if (pname == undefined) {
+                    pokemons.pokemonName = response.name;
+                }
+                UserModel.findByIdAndUpdate(
+                    id,
+                    { $push: { pokemonList: pokemons } },
+                    async (error, result) => {
+                        try {
+                            res.json({
+                                message: "The pokemon was added to you pokemon list",
+                            })
+                        } catch (error) {
+                            res.send(error);
+                        }
+                    }
+                )
+            })
+            .catch(function (error) {
+                res.status(404).json("Pokemon not found");
+            });
+
+    }
+)
+
+
+
+router.put(
+    '/delete',
+    (req, res) => {
+        const id = req.body._id;
+        const objID = req.body.pokeId;
+        UserModel.findByIdAndUpdate(
+            id,
+            { $pull: { pokemonList: { _id: objID } } },
+            async (error, result) => {
+                try {
+                    res.json({
+                        message: "The pokemon was deleted from your pokemon list",
+                    })
+                } catch (error) {
+                    res.status(404).json("Pokemon not found");
+                }
+            }
+        )
+
+    }
+)
+
+router.get(
+    '/list',
+    (req, res) => {
+        const id = req.body._id;
+        UserModel.findById(id).exec(function (err, user) {
+            return res.send(JSON.stringify(user.pokemonList));
+        })
+    }
+)
+
+router.get(
+    '/details',
+    (req, res) => {
+        const id = req.body._id;
+        const objID = req.body.pokeId;
+        let pokemonIndex;
+        UserModel.findById(id).exec(function (err, user) {
+            for(let i = 0 ; i<user.pokemonList.length;i++){
+                if(user.pokemonList[i]._id == objID)
+                pokemonIndex = user.pokemonList[i];
+            }
+            P.getPokemonByName(pokemonIndex.pokemon)
+            .then(function(response) {
+                res.send(response);
+              })
+              .catch(function(error) {
+                res.send( error);
+              });
+        })
+    }
+)
+
+
+
 
 module.exports = router;
