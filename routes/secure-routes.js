@@ -131,20 +131,50 @@ router.get(
         const objID = req.body.pokeId;
         let pokemonIndex;
         UserModel.findById(id).exec(function (err, user) {
-            for(let i = 0 ; i<user.pokemonList.length;i++){
-                if(user.pokemonList[i]._id == objID)
-                pokemonIndex = user.pokemonList[i];
+            for (let i = 0; i < user.pokemonList.length; i++) {
+                if (user.pokemonList[i]._id == objID)
+                    pokemonIndex = user.pokemonList[i];
             }
             P.getPokemonByName(pokemonIndex.pokemon)
-            .then(function(response) {
-                res.send(response);
-              })
-              .catch(function(error) {
-                res.send( error);
-              });
+                .then(function (response) {
+                    res.send(response);
+                })
+                .catch(function (error) {
+                    res.send(error);
+                });
         })
     }
 )
+
+router.put(
+    '/editPokemon',
+    (req, res) => {
+        const id = req.body._id;
+        const objID = req.body.pokeId;
+        const name = req.body.pokemonName;
+        
+        UserModel.findByIdAndUpdate(
+            id,
+            {
+                $set: {
+                    "pokemonList.4.pokemonName" : name
+                }
+                
+            },
+            async (error, result) => {
+                try {
+                    res.json({
+                        message: "The pokemon name has been changed",
+                    })
+                } catch (error) {
+                    res.status(404).json("Pokemon not found");
+                }
+            }
+
+        )
+    }
+)
+
 
 
 
