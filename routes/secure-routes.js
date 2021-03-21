@@ -153,11 +153,11 @@ router.put(
         const objID = req.body.pokeId;
         const name = req.body.pokemonName;
         
-        UserModel.findByIdAndUpdate(
-            id,
+        UserModel.findOneAndUpdate(
+            {"_id":id,"pokemonList._id":objID},
             {
                 $set: {
-                    "pokemonList.4.pokemonName" : name
+                    "pokemonList.$.pokemonName" : name
                 }
                 
             },
