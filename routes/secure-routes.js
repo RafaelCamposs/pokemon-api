@@ -129,12 +129,9 @@ router.get(
     (req, res) => {
         const id = req.body._id;
         const objID = req.body.pokeId;
-        let pokemonIndex;
         UserModel.findById(id).exec(function (err, user) {
-            for (let i = 0; i < user.pokemonList.length; i++) {
-                if (user.pokemonList[i]._id == objID)
-                    pokemonIndex = user.pokemonList[i];
-            }
+            const pokemonIndex = user.pokemonList.find(element => element._id == objID)
+            console.log(pokemonIndex);
             P.getPokemonByName(pokemonIndex.pokemon)
                 .then(function (response) {
                     res.send(response);

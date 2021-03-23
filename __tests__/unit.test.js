@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const UserModel = require('../model/model')
+const UserModel = require('../model/model');
 
 const userData = {
     email : 'brock@email.com',
@@ -9,7 +9,7 @@ const userData = {
     gender : 'male',
 }
 
-describe('User Model Test', ()=>{
+describe('Unit Test', ()=>{
     beforeAll(async () => {
         await mongoose.connect(global.__MONGO_URI__, { useNewUrlParser: true, useCreateIndex: true }, (err) => {
             if (err) {
