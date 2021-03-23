@@ -4,7 +4,7 @@ const passport = require('passport');
 
 const UserModel = require('./model/model');
 
-mongoose.connect("mongodb+srv://librarian:coxinha123@cluster0.81fve.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",{
+mongoose.connect({
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
